@@ -1,19 +1,24 @@
-resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "ecs-task-execution-role"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect    = "Allow"
-      Principal = {
-        Service = "ecs-tasks.amazonaws.com"
-      }
-      Action    = "sts:AssumeRole"
-    }]
-  })
-}
+resource "aws_ecs_service" "notify-service" {
+  name            = "note-service"
+  cluster         = aws_ecs_cluster.mycluster.id
+  task_definition = aws_ecs_task_definition.notify-service.arn
+  desired_count   = 3
+  iam_role        = aws_iam_role.mycluster.arn
+  depends_on      = [aws_iam_role_policy.mycluster]
 
-resource "aws_ecs_task_definition" "notification_task" {
-  # other task definition configurations
-  execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
-  task_role_arn      = aws_iam_role.ecs_task_execution_role.arn
+  ordered_placement_strategy {
+    type  = "binpack"
+    field = "cpu"
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.mycluster.arn
+    container_name   = "notify-service"
+    container_port   = 3000
+  }
+
+  placement_constraints {
+    type       = "memberOf"
+    expression = "attribute:ecs.availability-zone in [ap-south-1a, ap-south-1b]"
+  }
 }
