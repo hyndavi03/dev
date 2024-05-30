@@ -27,12 +27,19 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      # Retrieve ECR repository URL using Terraform output
+      # Initialize Terraform
+      - name: Initialize Terraform
+        run: terraform init
+
+      # Apply Terraform changes
+      - name: Apply Terraform changes
+        run: terraform apply -auto-approve
+        
       - name: Retrieve ECR repository URL
         id: ecr
         run: |
           ecr_repo_url=$(terraform output -raw ecr_repo_url)
-          echo "::set-output name=ecr_repo_url::$ecr_repo_url"
+          echo "ECR_REPO_URL=${ecr_repo_url}" >> $GITHUB_ENV
 
       # Build Docker image
       - name: Build Docker image
@@ -48,13 +55,6 @@ jobs:
       - name: Push Docker image to Amazon ECR
         run: |
           docker push ${{ steps.ecr.outputs.ecr_repo_url }}
-      # Initialize Terraform
-      - name: Initialize Terraform
-        run: terraform init
-
-      # Apply Terraform changes
-      - name: Apply Terraform changes
-        run: terraform apply -auto-approve
  
       - name: Update ECS service
         run: |
