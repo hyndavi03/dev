@@ -9,4 +9,15 @@ resource "aws_ecs_service" "notification_service" {
     subnets         = ["subnet-03b108e1dafc6f9e5"]  # Replace with your subnet ID
     security_groups = ["sg-01f2e8a08f271674d"]      # Replace with your security group ID
   }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.main.arn
+    container_name   = "notification-service"
+    container_port   = 3000
+  }
 }
+
+
+
+
+  
