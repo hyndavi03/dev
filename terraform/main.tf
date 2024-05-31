@@ -3,7 +3,7 @@ resource "aws_lb" "main" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb_sg.id]
-  subnets            = var.subnet_ids
+  subnets            = "subnet-03b108e1dafc6f9e5"
 
   enable_deletion_protection = false
 }
@@ -12,7 +12,7 @@ resource "aws_lb_target_group" "main" {
   name     = "notification-tg"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = var.vpc_id
+  vpc_id   = "vpc-0fb809d348139ac47"
   target_type = "ip"
 
   health_check {
