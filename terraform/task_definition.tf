@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 resource "aws_ecs_task_definition" "notification_task" {
   family                = "notification-task"
   network_mode          = "awsvpc"

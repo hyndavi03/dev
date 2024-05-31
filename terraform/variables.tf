@@ -9,3 +9,4 @@ variable "subnet_ids" {
   type    = list(string)
   default = []  # Set default value if needed
 }
+
