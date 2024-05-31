@@ -1,13 +1,12 @@
 resource "aws_ecs_service" "notification_service" {
-  name            = "notification-service"
-  cluster         = aws_ecs_cluster.mycluster[0].id
+  cluster         = aws_ecs_cluster.mycluster.id
   task_definition = aws_ecs_task_definition.notification_task.arn
-  desired_count   = 2
-  launch_type     = "FARGATE"
+  desired_count   = 1
 
   network_configuration {
-    subnets         = ["subnet-03b108e1dafc6f9e5"]  # Replace with your subnet ID
-    security_groups = ["sg-01f2e8a08f271674d"]      # Replace with your security group ID
+    subnets          = var.subnet_ids
+    security_groups  = [aws_security_group.lb_sg.id]
+    assign_public_ip = true
   }
 
   load_balancer {
@@ -16,9 +15,3 @@ resource "aws_ecs_service" "notification_service" {
     container_port   = 3000
   }
 }
-
-
-
-
-
-  
