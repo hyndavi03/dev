@@ -71,7 +71,7 @@ resource "aws_ecs_service" "notification_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.notification_tg.arn
     container_name   = "notification-container"
-    container_port   = 80
+    container_port   = 3000
   }
 
   depends_on = [aws_lb_listener.notification_lb_listener]
