@@ -56,7 +56,6 @@ resource "aws_security_group" "lb_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
 output "load_balancer_dns_name" {
   value = aws_lb.main.dns_name
 }
