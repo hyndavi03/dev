@@ -33,8 +33,8 @@ resource "aws_ecs_service" "notification_service" {
   desired_count   = 1
   launch_type     = "FARGATE"
   network_configuration {
-    subnets          = ["subnet-XXXXXXXX"]
-    security_groups  = ["sg-XXXXXXXX"]
+    subnets          = ["subnet-03b108e1dafc6f9e5"]
+    security_groups  = ["sg-01f2e8a08f271674d"]
     assign_public_ip = true
   }
 }
@@ -59,11 +59,4 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   ]
 }
 
-resource "aws_ecr_repository" "notification_service" {
-  name                 = "notification-service"
-  image_tag_mutability = "MUTABLE"
 
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}
