@@ -1,11 +1,3 @@
-provider "aws" {
-  region = "ap-south-1"
-}
-
-resource "aws_ecs_cluster" "mycluster" {
-  name = "notification_cluster"
-}
-
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "ecs_task_execution_role"
   assume_role_policy = jsonencode({
