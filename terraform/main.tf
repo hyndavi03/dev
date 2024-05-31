@@ -53,7 +53,9 @@ resource "aws_lb_listener" "http" {
 resource "aws_security_group" "lb_sg" {
   name        = "lb_sg"
   description = "Allow HTTP inbound traffic"
-  vpc_id      = var.vpc_id
+  vpc_id      = "vpc-0fb809d348139ac47"
+  
+
 
   ingress {
     description = "HTTP from VPC"

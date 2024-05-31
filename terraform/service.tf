@@ -10,27 +10,3 @@ resource "aws_ecs_service" "notification_service" {
   }
 }
 
-resource "aws_security_group" "lb_sg" {
-  name        = "lb_sg-${random_id.lb_sg_suffix.hex}"
-  description = "Allow HTTP inbound traffic"
-  vpc_id      = "vpc-0fb809d348139ac47"
-
-  ingress {
-    description = "HTTP from VPC"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-resource "random_id" "lb_sg_suffix" {
-  byte_length = 4
-}
