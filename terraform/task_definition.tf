@@ -7,7 +7,7 @@ resource "aws_ecs_task_definition" "notification_task" {
   cpu                   = "256"
   memory                = "512"
   execution_role_arn = aws_iam_role.ecs_task_execution_role[count.index].arn
-  # Make sure to update references accordingly
+
 
   container_definitions = jsonencode([
     {
