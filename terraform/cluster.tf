@@ -1,7 +1,9 @@
 # Check if the ECS cluster already exists
 data "aws_ecs_cluster" "existing_cluster" {
-  cluster_name = notification_service
+  cluster_name = "notification_service"  # Assuming "notification_service" is the cluster name
 }
+
+
 
 # Check if the IAM role already exists
 data "aws_iam_role" "existing_role" {
