@@ -1,24 +1,12 @@
-resource "aws_ecs_service" "notify-service" {
-  name            = "note-service"
+resource "aws_ecs_service" "notification_service" {
+  name            = "notification-service"
   cluster         = aws_ecs_cluster.mycluster.id
-  task_definition = aws_ecs_task_definition.notify-service.arn
-  desired_count   = 3
-  iam_role        = aws_iam_role.mycluster.arn
-  depends_on      = [aws_iam_role_policy.mycluster]
+  task_definition = aws_ecs_task_definition.notification_task.arn
+  desired_count   = 2
+  launch_type     = "FARGATE"
 
-  ordered_placement_strategy {
-    type  = "binpack"
-    field = "cpu"
-  }
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.mycluster.arn
-    container_name   = "notify-service"
-    container_port   = 3000
-  }
-
-  placement_constraints {
-    type       = "memberOf"
-    expression = "attribute:ecs.availability-zone in [ap-south-1a, ap-south-1b]"
+  network_configuration {
+    subnets         = ["subnet-03b108e1dafc6f9e5"]  # Replace with your subnet ID
+    security_groups = ["sg-01f2e8a08f271674d"]      # Replace with your security group ID
   }
 }
