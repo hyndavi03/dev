@@ -22,13 +22,6 @@ resource "aws_ecs_task_definition" "notification_task" {
           hostPort      = 80
         }
       ]
-       load_balancer {
-    target_group_arn = aws_lb_target_group.notification_tg.arn
-    container_name   = "notification-container"
-    container_port   = 80
-  }
-
-  depends_on = [aws_lb_listener.notification_lb_listener]
     }
   ])
 }
@@ -41,11 +34,20 @@ resource "aws_ecs_service" "notification_service" {
   task_definition = aws_ecs_task_definition.notification_task.arn
   desired_count   = 1
   launch_type     = "FARGATE"
+
   network_configuration {
     subnets          = ["subnet-03b108e1dafc6f9e5"]
     security_groups  = ["sg-01f2e8a08f271674d"]
     assign_public_ip = true
   }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.notification_tg.arn
+    container_name   = "notification-container"
+    container_port   = 80
+  }
+
+  depends_on = [aws_lb_listener.notification_lb_listener]
 }
 
 resource "aws_iam_role" "ecs_task_execution_role" {
