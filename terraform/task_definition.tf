@@ -2,32 +2,35 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   name = "ecs_task_execution_role"
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
         Principal = {
           Service = "ecs-tasks.amazonaws.com"
         }
-        Action = "sts:AssumeRole"
       }
     ]
+    Version = "2012-10-17"
   })
 
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
   ]
 }
-
 resource "aws_ecs_task_definition" "notification_task" {
-  family                   = "notification-task"
-  container_definitions    = jsonencode([
+  family                = "notification-task"
+  network_mode          = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                   = "256"
+  memory                = "512"
+  execution_role_arn    = aws_iam_role.ecs_task_execution_role.arn
+
+  container_definitions = jsonencode([
     {
       name      = "notification-service"
-      image     = "${aws_ecr_repository.notification_service.repository_url}:latest"
+      image     = "${aws_account_id}.dkr.ecr.${region}.amazonaws.com/notification-service:latest"
       essential = true
-      memory    = 512
-      cpu       = 256
       portMappings = [
         {
           containerPort = 3000
@@ -36,5 +39,4 @@ resource "aws_ecs_task_definition" "notification_task" {
       ]
     }
   ])
-  execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
 }

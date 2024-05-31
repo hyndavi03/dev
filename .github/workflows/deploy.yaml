@@ -55,6 +55,17 @@ jobs:
       - name: Import existing ECR repository if it exists
         run: |
           terraform import aws_ecr_repository.notification_service notification-service || echo "ECR repository does not exist, continuing..."
+        working-directory: ./terraform
+
+      - name: Import existing ECS cluster if it exists
+        run: |
+          terraform import aws_ecs_cluster.mycluster notification_cluster || echo "ECS cluster does not exist, continuing..."
+        working-directory: ./terraform
+
+      - name: Import existing IAM role if it exists
+        run: |
+          terraform import aws_iam_role.ecs_task_execution_role ecs_task_execution_role || echo "IAM role does not exist, continuing..."
+        working-directory: ./terraform
 
       - name: Apply Terraform configuration
         run: terraform apply -auto-approve
