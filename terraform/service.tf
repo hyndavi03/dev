@@ -19,8 +19,8 @@ resource "aws_ecs_task_definition" "notification_task" {
       essential = true
       portMappings = [
         {
-          containerPort = 80
-          hostPort      = 80
+          containerPort = 3000
+          hostPort      = 3000
         }
       ]
     }
@@ -29,7 +29,7 @@ resource "aws_ecs_task_definition" "notification_task" {
 
 resource "aws_lb_target_group" "notification_tg" {
   name     = "notification-tg"
-  port     = 80
+  port     = 3000
   protocol = "HTTP"
   vpc_id   = "vpc-0fb809d348139ac47"
   target_type = "ip"
