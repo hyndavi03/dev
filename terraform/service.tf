@@ -1,6 +1,6 @@
 resource "aws_ecs_service" "notification_service" {
   name            = "notification-service"
-  cluster         = aws_ecs_cluster.mycluster.id
+  cluster         = aws_ecs_cluster.mycluster[0].id
   task_definition = aws_ecs_task_definition.notification_task.arn
   desired_count   = 2
   launch_type     = "FARGATE"
@@ -16,6 +16,7 @@ resource "aws_ecs_service" "notification_service" {
     container_port   = 3000
   }
 }
+
 
 
 
