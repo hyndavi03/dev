@@ -27,13 +27,6 @@ jobs:
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Create ECR repository if it does not exist
-        id: create-ecr
-        run: |
-          if ! aws ecr describe-repositories --repository-names notification-service; then
-            aws ecr create-repository --repository-name notification-service
-          fi
-
       - name: Build Docker image
         run: |
           docker build -t notification-service .
@@ -48,12 +41,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y awscli
 
+      - name: Destroy existing resources
+        run: terraform destroy -auto-approve
+        working-directory: ./terraform
+
       - name: Initialize Terraform
         run: terraform init
         working-directory: ./terraform
 
       - name: Apply Terraform configuration
-        run: terraform apply -auto-approve -refresh=false
+        run: terraform apply -auto-approve
         working-directory: ./terraform
 
       - name: Update ECS Service
