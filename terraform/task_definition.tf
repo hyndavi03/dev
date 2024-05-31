@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "ap-south-1"
-}
-
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "ecs_task_execution_role" {
