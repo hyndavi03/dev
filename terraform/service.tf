@@ -55,6 +55,38 @@ resource "aws_lb_listener" "http" {
   }
 }
 
+resource "aws_lb" "main" {
+  name               = "notification-lb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.lb_sg.id]
+  subnets            = "subnet-03b108e1dafc6f9e5"
+
+  enable_deletion_protection = false
+}
+
+resource "aws_security_group" "lb_sg" {
+  name        = "lb_sg"
+  description = "Allow HTTP inbound traffic"
+  vpc_id      = "vpc-0fb809d348139ac47"
+  
+
+
+  ingress {
+    description = "HTTP from VPC"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
 
 resource "aws_ecs_service" "notification_service" {
   name            = "notification-service"
