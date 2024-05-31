@@ -27,7 +27,17 @@ resource "aws_ecs_task_definition" "notification_task" {
   ])
 }
 
-resource "aws_lb_target_group" "main" {
+resource "aws_lb" "main" {
+  name               = "notification-lb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.lb_sg.id]
+  subnets            = ["subnet-03b108e1dafc6f9e5"]  # Replace with your subnet IDs
+
+  enable_deletion_protection = false
+}
+
+resource "aws_lb_target_group" "notification_tg" {
   name     = "notification-tg"
   port     = 80
   protocol = "HTTP"
@@ -44,47 +54,14 @@ resource "aws_lb_target_group" "main" {
   }
 }
 
-resource "aws_lb_listener" "http" {
+resource "aws_lb_listener" "notification_lb_listener" {
   load_balancer_arn = aws_lb.main.arn
   port              = "80"
   protocol          = "HTTP"
   
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.main.arn
-  }
-}
-
-resource "aws_lb" "main" {
-  name               = "notification-lb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.lb_sg.id]
-  subnets            = "subnet-03b108e1dafc6f9e5"
-
-  enable_deletion_protection = false
-}
-
-resource "aws_security_group" "lb_sg" {
-  name        = "lb_sg"
-  description = "Allow HTTP inbound traffic"
-  vpc_id      = "vpc-0fb809d348139ac47"
-  
-
-
-  ingress {
-    description = "HTTP from VPC"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    target_group_arn = aws_lb_target_group.notification_tg.arn
   }
 }
 
@@ -96,7 +73,7 @@ resource "aws_ecs_service" "notification_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = ["subnet-03b108e1dafc6f9e5"]
+    subnets          = ["subnet-03b108e1dafc6f9e5"]  # Replace with your subnet IDs
     security_groups  = ["sg-01f2e8a08f271674d"]
     assign_public_ip = true
   }
@@ -129,5 +106,3 @@ resource "aws_iam_role" "ecs_task_execution_role" {
     "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
   ]
 }
-
-
