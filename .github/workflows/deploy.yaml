@@ -1,4 +1,4 @@
-name: Deploy to EcCS
+name: Deploy to ECS
 
 on:
   push:
@@ -23,6 +23,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
 
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: Apply Terraform configuration
+        run: terraform apply -auto-approve
+        working-directory: ./terraform
+
       - name: Login to Amazon ECR
         id: ecr-login
         run: |
@@ -36,19 +49,6 @@ jobs:
       - name: Push Docker image to Amazon ECR
         run: |
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/notification-service:latest
-
-      - name: Install AWS CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
-
-      - name: Initialize Terraform
-        run: terraform init
-        working-directory: ./terraform
-
-      - name: Apply Terraform configuration
-        run: terraform apply -auto-approve
-        working-directory: ./terraform
 
       - name: Update ECS Service
         run: |
