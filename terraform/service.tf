@@ -27,16 +27,6 @@ resource "aws_ecs_task_definition" "notification_task" {
   ])
 }
 
-resource "aws_lb" "main" {
-  name               = "notification-lb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.lb_sg.id]
-  subnets            = ["subnet-03b108e1dafc6f9e5"]  # Replace with your subnet IDs
-
-  enable_deletion_protection = false
-}
-
 resource "aws_lb_target_group" "notification_tg" {
   name     = "notification-tg"
   port     = 80
