@@ -1,4 +1,4 @@
-name: Deploy to ECS 
+name: Deploy to ECS
 
 on:
   push:
@@ -52,6 +52,9 @@ jobs:
         run: terraform init
         working-directory: ./terraform
 
+      - name: Destroy existing Terraform resources (if any)
+        run: terraform destroy -auto-approve
+        working-directory: ./terraform
 
       - name: Apply Terraform configuration
         run: terraform apply -auto-approve
