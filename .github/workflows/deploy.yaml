@@ -27,6 +27,12 @@ jobs:
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Create ECR repository
+        id: create-ecr
+        run: |
+          aws ecr describe-repositories --repository-names notification-service || \
+          aws ecr create-repository --repository-name notification-service
+
       - name: Build Docker image
         run: |
           docker build -t notification-service .
