@@ -14,7 +14,7 @@ resource "aws_ecs_task_definition" "notification_task" {
   container_definitions    = jsonencode([
     {
       name      = "notification-container"
-      image     = "${aws_account_id}.dkr.ecr.ap-south-1.amazonaws.com/notification-service:latest"
+      image     = "992382552335.dkr.ecr.ap-south-1.amazonaws.com/notification-service:latest"
       essential = true
       portMappings = [
         {
