@@ -1,17 +1,3 @@
-resource "aws_iam_role" "ecs_task_execution_role" {
-  name               = "ecs_task_execution_role"
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        Service = "ecs-tasks.amazonaws.com"
-      }
-      Action = "sts:AssumeRole"
-    }]
-  })
-}
-
 resource "aws_lb" "main" {
   name               = "notification-lb"
   internal           = false
@@ -74,4 +60,11 @@ resource "aws_security_group" "lb_sg" {
 }
 output "load_balancer_dns_name" {
   value = aws_lb.main.dns_name
+}
+output "cluster_id" {
+  value = aws_ecs_cluster.mycluster.id
+}
+
+output "ecr_repository_url" {
+  value = aws_ecr_repository.notification_service.repository_url
 }
