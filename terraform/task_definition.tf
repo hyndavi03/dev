@@ -1,3 +1,9 @@
+provider "aws" {
+  region = "ap-south-1"
+}
+
+data "aws_caller_identity" "current" {}
+
 resource "aws_iam_role" "ecs_task_execution_role" {
   name = "ecs_task_execution_role"
 
@@ -18,6 +24,7 @@ resource "aws_iam_role" "ecs_task_execution_role" {
     "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
   ]
 }
+
 resource "aws_ecs_task_definition" "notification_task" {
   family                = "notification-task"
   network_mode          = "awsvpc"
@@ -29,7 +36,7 @@ resource "aws_ecs_task_definition" "notification_task" {
   container_definitions = jsonencode([
     {
       name      = "notification-service"
-      image     = "${aws_account_id}.dkr.ecr.${region}.amazonaws.com/notification-service:latest"
+      image     = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/notification-service:latest"
       essential = true
       portMappings = [
         {
