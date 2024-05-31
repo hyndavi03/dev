@@ -24,24 +24,23 @@ jobs:
           aws-region: ap-south-1
 
       - name: Login to Amazon ECR
+        id: ecr-login
         run: |
-          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 992382552335.dkr.ecr.ap-south-1.amazonaws.com
-        
+          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com
 
       - name: Build Docker image
         run: |
           docker build -t notification-service .
-          docker tag notification-service:latest ${{ steps.ecr-login.outputs.registry }}/notification-service:latest
+          docker tag notification-service:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/notification-service:latest
 
       - name: Push Docker image to Amazon ECR
         run: |
-          docker push ${{ steps.ecr-login.outputs.registry }}/notification-service:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/notification-service:latest
 
       - name: Install AWS CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli
-
 
       - name: Initialize Terraform
         run: terraform init
