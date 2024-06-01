@@ -23,6 +23,14 @@ resource "aws_ecs_task_definition" "notification_task" {
           hostPort      = 3000
         }
       ]
+      logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        awslogs-group         = "/ecs/notification-service"
+        awslogs-region        = "ap-south-1"
+        awslogs-stream-prefix = "ecs"
+      }
+    }
     }
   ])
 }
