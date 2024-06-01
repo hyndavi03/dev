@@ -1,5 +1,5 @@
 resource "aws_appautoscaling_target" "notification_scaling_target" {
-  max_capacity       = 2
+  max_capacity       = 5
   min_capacity       = 1
   resource_id        = "service/${aws_ecs_cluster.notification_cluster.name}/${aws_ecs_service.notification_service.name}"
   scalable_dimension = "ecs:service:DesiredCount"
